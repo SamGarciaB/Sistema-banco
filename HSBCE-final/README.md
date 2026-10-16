@@ -36,6 +36,8 @@ El archivo `.env.example` trae solo valores de muestra y se puede compartir. El 
 - `POST /api/save.php` valida los campos y la respuesta de Turnstile antes de guardar la solicitud.
 - También aplica límites de frecuencia, idempotencia y consultas preparadas.
 
+El límite de solicitudes usa la IP que entrega el servidor en `REMOTE_ADDR`; la API no confía en `X-Forwarded-For` ni en cabeceras que pueda mandar el visitante. Si se instala detrás de un proxy, configura ese proxy como confiable en el servidor web (por ejemplo, con `mod_remoteip` y las redes oficiales del proxy) para que `REMOTE_ADDR` represente la IP real. No habilites la confianza en cabeceras reenviadas para cualquier origen.
+
 ## Demo de portafolio
 
 [Ver la demo pública](https://samgarciab.github.io/Sistema-banco/)
@@ -46,6 +48,6 @@ La demo es pública y cualquiera con el enlace puede abrirla o compartirla. No e
 
 ## Sobre los datos y el uso
 
-El backend guarda en MySQL los campos que recibe y no los cifra desde la aplicación. Para las pruebas, usa datos ficticios y no lo conectes a solicitudes reales. Un uso real también necesitaría definir cómo se obtienen el consentimiento, el acceso, el almacenamiento, la retención y la eliminación de los datos.
+El backend guarda en MySQL los campos que recibe y no los cifra desde la aplicación. Para las pruebas, usa datos ficticios y no lo conectes a solicitudes reales. Los registros del servidor también incluyen metadatos de petición, como IP y agente de usuario; configura acceso y retención adecuados para esos registros. Un uso real también necesitaría definir cómo se obtienen el consentimiento, el acceso, el almacenamiento, la retención y la eliminación de los datos.
 
 El proyecto no está listo para ofrecer servicios financieros ni representa a HSBC o FIFA. Antes de cualquier uso fuera de una prueba local, habría que revisar la configuración del servidor, la seguridad, la privacidad y los permisos de marca.
