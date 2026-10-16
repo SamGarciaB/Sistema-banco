@@ -9,7 +9,6 @@ declare(strict_types=1);
  * estandarizadas, y validación de nonces contra DB.
  * =============================================================================
  */
-
 function getTraceId(): string
 {
     static $traceId = null;
@@ -34,23 +33,16 @@ function validateNonce(PDO $pdo, string $nonce): bool
     }
 }
 
+/**
+ * Usa REMOTE_ADDR, que el servidor web determina a partir de la conexión.
+ * No confía directamente en cabeceras de reenvío que cualquier cliente puede
+ * enviar. Si hay un proxy inverso, configúralo como proxy de confianza en el
+ * servidor web (por ejemplo, mod_remoteip con las redes oficiales del proxy).
+ */
 function getClientIp(): string
 {
-    if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
-        $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
-        if (filter_var($ip, FILTER_VALIDATE_IP)) {
-            return $ip;
-        }
-    }
-
-    if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        $ip = trim(explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0]);
-        if (filter_var($ip, FILTER_VALIDATE_IP)) {
-            return $ip;
-        }
-    }
-
-    return $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+    return filter_var($ip, FILTER_VALIDATE_IP) ? $ip : 'unknown';
 }
 
 function jsonResponse(array $data, int $status = 200): never
