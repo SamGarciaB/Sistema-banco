@@ -1,0 +1,11 @@
+# =============================================================================
+# Bloqueo total de /lib/ desde el web.
+# Defensa en profundidad: aunque la carpeta vive fuera de /public/,
+# si por error queda dentro, deniega todo igual.
+# =============================================================================
+
+Require all denied
+
+<FilesMatch ".*">
+    Require all denied
+</FilesMatch>

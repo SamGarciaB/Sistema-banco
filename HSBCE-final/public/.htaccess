@@ -1,0 +1,78 @@
+# =============================================================================
+# .htaccess de PRODUCCIÓN para /public/
+# =============================================================================
+
+Options -Indexes -MultiViews
+ServerSignature Off
+
+# ── BLOQUEO DE ARCHIVOS SENSIBLES ────────────────────────────────────────────
+<FilesMatch "\.(env|log|sql|ini|md|sh|bak|backup|old|gitignore|json|lock|yml|yaml)$">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "^(db|logger|security|rate_limit|env)\.php$">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# ── HEADERS DE SEGURIDAD ─────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+    Header always set X-Frame-Options "DENY"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=(), usb=(), accelerometer=(), gyroscope=()"
+    Header always set X-XSS-Protection "0"
+    Header always set Cross-Origin-Opener-Policy "same-origin"
+    Header always set Cross-Origin-Resource-Policy "same-origin"
+
+    <FilesMatch "\.(html|htm)$">
+        Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://challenges.cloudflare.com; img-src 'self' data:; frame-src https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests; block-all-mixed-content;"
+    </FilesMatch>
+
+    Header unset X-Powered-By
+    Header unset Server
+</IfModule>
+
+# ── HSTS — DESCOMENTAR cuando HTTPS esté funcionando ─────────────────────────
+# <IfModule mod_headers.c>
+#     <If "%{HTTPS} == 'on'">
+#         Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+#     </If>
+# </IfModule>
+
+# ── FORZAR HTTPS — DESCOMENTAR en producción ─────────────────────────────────
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     RewriteCond %{HTTPS} off
+#     RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+#     RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# </IfModule>
+
+# ── MÉTODOS HTTP PERMITIDOS ──────────────────────────────────────────────────
+<LimitExcept GET POST OPTIONS>
+    Require all denied
+</LimitExcept>
+
+# ── LÍMITES DE PHP ───────────────────────────────────────────────────────────
+<IfModule mod_php.c>
+    php_value post_max_size       1M
+    php_value upload_max_filesize 1M
+    php_value max_execution_time  30
+    php_value max_input_time      30
+    php_flag  expose_php          Off
+    php_flag  allow_url_fopen     Off
+    php_flag  allow_url_include   Off
+</IfModule>
+
+# ── CACHE DE ASSETS ESTÁTICOS ────────────────────────────────────────────────
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/svg+xml          "access plus 1 month"
+    ExpiresByType image/png              "access plus 1 month"
+    ExpiresByType image/jpeg             "access plus 1 month"
+    ExpiresByType text/css               "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+</IfModule>

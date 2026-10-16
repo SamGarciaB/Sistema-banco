@@ -1,0 +1,13 @@
+# =============================================================================
+# .htaccess de la RAÍZ del proyecto
+# Solo /public/ debe ser accesible por web. Esta carpeta raíz contiene
+# .env, /lib/, /storage/, /sql/ que NUNCA deben servirse al cliente.
+# =============================================================================
+
+<FilesMatch "\.(env|log|sql|ini|md|sh|bak|backup|old|gitignore|json|lock|yml|yaml|txt)$">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>

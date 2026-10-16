@@ -1,0 +1,37 @@
+# Dependencias
+/node_modules/
+/vendor/
+# Variables de entorno y secretos
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+# Logs y archivos generados localmente
+/storage/
+/logs/
+*.log
+# Respaldos y archivos temporales
+*.bak
+*.backup
+*.old
+*.tmp
+# Archivos del sistema y del editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+# Artefactos de compilación
+/dist/
+/out/
+/.next/
+# Exportaciones locales de bases de datos
+*.sql
+*.sql.gz
+!sql/schema.sql
+!sql/migrations/*.sql
+*.dump
+*.sqlite
+*.sqlite3
